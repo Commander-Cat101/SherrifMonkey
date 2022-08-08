@@ -1,4 +1,4 @@
-namespace TimeTraveler;
+namespace SherrifMonkey;
 
 public static class ModHelperData
 {
