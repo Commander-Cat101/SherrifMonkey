@@ -1,12 +1,5 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
-using Assets.Scripts.Models.Towers;
-using Assets.Scripts.Models.Towers.Behaviors;
-using Assets.Scripts.Models.Towers.Filters;
-using Assets.Scripts.Models.Towers.Projectiles.Behaviors;
-using Assets.Scripts.Models.TowerSets;
-using Assets.Scripts.Unity;
-using Assets.Scripts.Unity.Display;
 using BTD_Mod_Helper;
 using BTD_Mod_Helper.Api.Display;
 using BTD_Mod_Helper.Api.Enums;
@@ -14,9 +7,25 @@ using BTD_Mod_Helper.Api.Towers;
 using BTD_Mod_Helper.Extensions;
 using MelonLoader;
 using SheriffMonkey.Displays.Projectiles;
+using UnityEngine;
+using System;
+using System.Text;
+using System.Threading.Tasks;
+using TimeTraveler.Displays.Projectiles;
+using Il2CppAssets.Scripts.Models.Towers;
+using Il2CppAssets.Scripts.Models.Towers.Behaviors;
+using Il2CppAssets.Scripts.Models.Towers.Projectiles.Behaviors;
+using Il2CppAssets.Scripts.Models.TowerSets;
+using Il2CppAssets.Scripts.Unity;
+using Il2CppAssets.Scripts.Unity.Display;
+using Il2CppAssets.Scripts.Models.Towers.Behaviors.Attack;
+using Il2CppAssets.Scripts.Models.Towers.Behaviors.Emissions;
+using Il2CppAssets.Scripts.Simulation.Towers;
+using Il2CppAssets.Scripts.Models.Towers.Filters;
 
-[assembly: MelonModInfo(typeof(TemplateMod.Main), "Sheriff Monkey", "2.0.0", "Commander__Cat")]
+[assembly: MelonModInfo(typeof(TemplateMod.Main), "Sheriff Monkey", "2.0.1", "Commander__Cat")]
 [assembly: MelonGame("Ninja Kiwi", "BloonsTD6")]
+
 namespace TemplateMod
 {
     public class Main : BloonsTD6Mod
@@ -142,7 +151,7 @@ namespace SheriffMonkey
     public class SheriffMonkey : ModTower
     {
 
-        public override string TowerSet => TowerSetType.Military;
+        public override TowerSet TowerSet => TowerSet.Military;
         public override string BaseTower => TowerType.EngineerMonkey;
         public override int Cost => 780;
 
@@ -150,7 +159,7 @@ namespace SheriffMonkey
         public override int MiddlePathUpgrades => 5;
         public override int BottomPathUpgrades => 5;
         public override string Description => "The Sheriff is in town, and shoots bloons with his gun";
-
+        public override ParagonMode ParagonMode => ParagonMode.Base555;
         public override void ModifyBaseTowerModel(TowerModel towerModel)
         {
             towerModel.range = 50;
@@ -248,11 +257,7 @@ namespace SheriffMonkey.Upgrades.MiddlePath
         public override void ApplyUpgrade(TowerModel tower)
         {
             var attackModel = tower.GetAttackModel();
-            foreach (var projectile in tower.GetWeapons().Select(weaponModel => weaponModel.projectile))
-            {
-                projectile.GetDamageModel().damage += 4;
-
-            }
+            attackModel.weapons[0].projectile.GetDamageModel().damage += 4;
             var windModel = Game.instance.model.GetTowerFromId("NinjaMonkey-010").GetWeapon().projectile.GetBehavior<WindModel>().Duplicate();
             windModel.chance = 0.33f;
             windModel.distanceMin = 100f;
@@ -273,11 +278,7 @@ namespace SheriffMonkey.Upgrades.MiddlePath
         public override void ApplyUpgrade(TowerModel tower)
         {
             var attackModel = tower.GetAttackModel();
-            foreach (var projectile in tower.GetWeapons().Select(weaponModel => weaponModel.projectile))
-            {
-                projectile.GetDamageModel().damage += 22;
-
-            }
+            attackModel.weapons[0].projectile.GetDamageModel().damage += 22;
             var windModel = Game.instance.model.GetTowerFromId("NinjaMonkey-010").GetWeapon().projectile.GetBehavior<WindModel>().Duplicate();
             windModel.chance = .50f;
             windModel.distanceMin = 200f;
